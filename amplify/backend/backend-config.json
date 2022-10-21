@@ -1,0 +1,8 @@
+{
+  "storage": {
+    "workouts": {
+      "service": "DynamoDB",
+      "providerPlugin": "awscloudformation"
+    }
+  }
+}

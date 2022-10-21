@@ -1,0 +1,14 @@
+{
+  "resourceName": "workouts",
+  "tableName": "workouts",
+  "partitionKey": {
+    "fieldName": "date",
+    "fieldType": "number"
+  },
+  "sortKey": {
+    "fieldName": "time",
+    "fieldType": "number"
+  },
+  "gsi": [],
+  "triggerFunctions": []
+}
