@@ -75,10 +75,10 @@ const Navbar = props => {
                     <LinkItem href="/" path={path}>
                         Entry
                     </LinkItem>
-                    <LinkItem href="/generator" path={path}>
+                    <LinkItem href="/data" path={path}>
                         Data
                     </LinkItem>
-                    <LinkItem href="/upload" path={path}>
+                    <LinkItem href="/config" path={path}>
                         Config
                     </LinkItem>
                 </Stack>
