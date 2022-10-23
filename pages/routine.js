@@ -3,8 +3,20 @@ import Layout from "../components/layouts/article"
 import Paragraph from "../components/paragraph"
 import Section from "../components/section"
 import { ChevronRightIcon } from '@chakra-ui/icons'
+//import chestJson from './chest.json'
+import { useEffect, useState } from "react"
+
 
 const routine = () => {
+
+    // const [ chestList, setChestList ] = useState('');
+    
+    // useEffect(() => {
+    //     setChestList(chestJson.workouts);
+    // }) 
+    
+
+
     return (
         <Layout>
             <Container>
@@ -28,6 +40,9 @@ const routine = () => {
                         Chest Day
                     </Heading>
                 </Section>
+
+
+
                 <Section delay={0.3}>
                     <List>
                         <ListItem>

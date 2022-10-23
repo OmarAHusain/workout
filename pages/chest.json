@@ -1,0 +1,13 @@
+{
+    "workouts": [
+        {
+            "name": "Bench Press"
+        },
+        {
+            "name": "Shoulder Press"
+        },
+        {
+            "name": "Dips"
+        }
+    ]
+}

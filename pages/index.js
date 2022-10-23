@@ -59,7 +59,7 @@ export default function Home() {
   setTimeout(function () {timekeeper();},1000)
 
   // ------ Handle Routine entry ------  
-  const [routine, setRoutine] = useState('')
+  const [routine, setRoutine] = useState('Chest')
 
   // ------ Handle Exercise entry ------
   const [exercise, setExercise] = useState('')
@@ -71,6 +71,7 @@ export default function Home() {
     if (target.type === 'select-one') {
       let i = target.selectedOptions[0].value;
       setExercise(i)
+      setSet(1)
     }
   }
 
