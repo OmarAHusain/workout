@@ -12,6 +12,9 @@
       "AmplifyAppId": "d2hc5qi4vb80em"
     },
     "categories": {
+      "api": {
+        "workout": {}
+      },
       "storage": {
         "workouts": {}
       }

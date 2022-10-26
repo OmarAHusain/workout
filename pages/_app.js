@@ -2,6 +2,8 @@ import { AnimatePresence } from 'framer-motion'
 import Layout from '../components/layouts/main'
 import Chakra from '../components/chakra'
 
+
+
 const Website = ({ Component, pageProps, router }) => {
   return (
     <Chakra cookies={pageProps.cookies}>

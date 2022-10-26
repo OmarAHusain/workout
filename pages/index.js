@@ -1,5 +1,6 @@
 import {
-  Container, 
+  Container,
+  chakra, 
   Divider, 
   Heading, 
   Radio, 
@@ -21,13 +22,39 @@ import {
   Input,
   useToast,
   FormControl,
-  FormLabel
+  FormLabel,
+  shouldForwardProp,
+  Table,
+  Thead,
+  Tbody,
+  Tfoot,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
+  TableContainer
 } from '@chakra-ui/react'
+import { motion } from 'framer-motion'
 import Layout from '../components/layouts/article'
 import Section from '../components/section'
 import Paragraph from '../components/paragraph'
 import { useEffect, useState } from 'react'
 import { useTime } from 'framer-motion'
+
+// Imports for DynamoDB interactions
+import axios from 'axios' // might not be needed for graphql shit
+import { Amplify , API, graphqlOperation } from 'aws-amplify'
+import { createWorkout } from '../src/graphql/mutations'
+import { listWorkouts } from '../src/graphql/queries'
+
+import awsExports from '../src/aws-exports'
+Amplify.configure(awsExports)
+
+const StyledTr = chakra(motion.Tr, {
+  shouldForwardProp: prop => {
+      return shouldForwardProp(prop) || prop === 'transition'
+  }
+})
 
 export default function Home() {
   
@@ -64,9 +91,63 @@ export default function Home() {
   // ------ Handle Exercise entry ------
   const [exercise, setExercise] = useState('')
 
+  const chestDefaultList = {
+    items: [
+      { name: 'Bench Press'},
+      { name: 'Shoulder Press'},
+      { name: 'Assisted Dip'},
+      { name: 'Chest Fly'},
+      { name: 'Tricep Extension'},
+      { name: 'Crunch'},
+      { name: 'Leg Raise'}
+  ]}
+
+  const backDefaultList = {
+    items: [
+      { name: 'Assisted Pullup'},
+      { name: 'Bentover Row'},
+      { name: 'Standing Row'},
+      { name: 'Shoulder Fly'},
+      { name: 'Bicep Curl'},
+      { name: 'Bridge'},
+      { name: 'Plank'}
+  ]}
+
+  const legDefaultList = {
+    items: [
+      { name: 'Squat'},
+      { name: 'Deadlift'},
+      { name: 'Lunge'},
+      { name: 'Hamstring Curl'},
+      { name: 'Quad Extension'},
+      { name: 'Calf Raise'},
+      { name: 'Hip Thrust'}
+  ]}
+
+  const [ exerciseList, setExerciseList ] = useState(chestDefaultList.items)
+
+  function routineChanged(v) {
+    setRoutine(v)
+    switch (v){
+      case 'Chest':
+        setExerciseList(chestDefaultList.items)
+        setExercise(chestDefaultList.items[0].name)
+        setSet(1)
+        break;
+      case 'Back':
+        setExerciseList(backDefaultList.items)
+        setExercise(backDefaultList.items[0].name)
+        setSet(1)
+        break;
+      case 'Legs':
+        setExerciseList(legDefaultList.items)
+        setExercise(legDefaultList.items[0].name)
+        setSet(1)
+    }
+  }
+
   function selectExercise(e) {
     const { target } = e;
-
     // note: 'select-multiple' for multi select
     if (target.type === 'select-one') {
       let i = target.selectedOptions[0].value;
@@ -112,26 +193,85 @@ export default function Home() {
       setRep(i)
     }
   }
+
+  // Set Done button has been clicked, uploading to DynamoDB and adding a Toast for user confirmation.
   const toast = useToast()
-  function submitSet() {
-    // Set Done button has been clicked, uploading to DynamoDB and adding a Toast for user confirmation.
-
+  async function submitSet() {
+    // Toasty content for user to see
     let info = 'Routine: ' + routine + ' Exercise: ' + exercise + ' Set: ' + set + ' Reps: ' + rep + ' @ ' + weight + 'kg. Date & Time: ' + timer + ' Raw: ' + date + time
+    
+    const formData = { 
+      datetime: timer,
+      time: time,
+      date: date,
+      routine: routine,
+      exercise: exercise,
+      set: set,
+      weight: weight,
+      rep: rep
+    }
+    try {
+      const dataOutput = await API.graphql(graphqlOperation(createWorkout, {input: formData}))
+      toast({
+        title: 'Set Finished',
+        description: info,
+        status: 'success',
+        duration: 10000,
+        isClosable: true,
+      })
+      incrementSet()
+      fetch()
+    } catch ({ err }) {
+      console.log('Failed: ' + err)
+      console.log('Error message: ' + err.message)
+      console.log('Error stack: ' + err.stack)
+      toast({
+        title: 'Failed to submit',
+        description: info,
+        status: 'error',
+        duration: 10000,
+        isClosable: true
+      })
+    }
 
-    toast({
-      title: 'Set Finished',
-      description: info,
-      status: 'success',
-      duration: 10000,
-      isClosable: true,
-    })
-    incrementSet()
+    
   }
   
-  useEffect(() => {
-    //console.log(date + ' ' + time)
-  })
+  // Table init and refresh
+  const initialState =  
+  {
+      datetime: ' - ', 
+      date: ' - ', 
+      time: ' - ',
+      routine: ' - ', 
+      exercise: ' - ', 
+      set: ' - ', 
+      weight: ' - ', 
+      rep: ' - ',
+  }
   
+  const [contents, setContents] = useState([initialState])
+
+  // Refresh table
+  useEffect(() => {
+    fetch()
+  }, [])
+
+  // Pull set list from DynamoDB
+  async function fetch() {
+    try {
+      console.log('Retreiving data')
+      const contentData = await API.graphql(graphqlOperation(listWorkouts))
+      setContents(contentData.data.listWorkouts.items)
+    }
+    catch (err) {
+      console.log('Error fetching contents: ' + err)
+      console.log('Error message: ' + err.message)
+      console.log('Error stack: ' + err.stack)
+
+    }
+  }
+
   return (
     <Layout>
       <Container maxW="container.md">
@@ -150,7 +290,7 @@ export default function Home() {
         <FormControl>
         <Section delay={0.2}>
           <FormLabel>Routine</FormLabel>          
-          <RadioGroup onChange={setRoutine} value={routine}>
+          <RadioGroup onChange={routineChanged} value={routine}>
             <Stack direction='row'>
               <Radio value='Chest'>Chest</Radio>
               <Radio value='Back'>Back</Radio>
@@ -161,14 +301,12 @@ export default function Home() {
         <Stack direction='row'>
           <Section delay={0.3}>
             <FormLabel>Exercise</FormLabel>
-            <Select  width='320px' size='md' onChange={selectExercise}>
-              <option value='Benchpress'>Benchpress</option>
-              <option value='Deadlift'>Deadlift</option>
-              <option value='Squat'>Squat</option>
-              <option value='Lunge'>Lunge</option>
-              <option value='Hamstring'>Hamstring</option>
-              <option value='Quad'>Quad</option>
-              <option value='Calf'>Calf</option>
+            
+              <Select  width='320px' size='md' onChange={selectExercise}>
+              { exerciseList.map((item, index) => (
+                <option key={index} value={item.name}>{item.name}</option>
+                
+              ))}
             </Select>
           </Section>
         </Stack>
@@ -212,16 +350,43 @@ export default function Home() {
             <Button onClick={decrementRep}>-</Button>
             <Button width='220px' variant='outline'>{rep}</Button>
             <Button onClick={incrementRep}>+</Button>
-            {/* <Button {...decRep}>-</Button>
-            <Input {...inputRep} />
-            <Button {...incRep}>+</Button> */}
           </HStack>
         </Section>
         <Section delay={0.7}>
-          <Button width='320px' type='submit' onClick={submitSet}>Set Done</Button>
-          
+          <Button width='320px' type='submit' onClick={submitSet}>Set Done</Button>          
         </Section>
         </FormControl>
+        <Section delay={0.8}>
+        <TableContainer>
+          <Table variant='striped' colorScheme='gray' size='sm'>
+              <TableCaption>
+                {/* { status } */}
+              </TableCaption>
+              <Thead>
+              <Tr>
+                  {/* <Th>Time</Th>
+                  <Th>Routine</Th> */}
+                  <Th>Exercise</Th>
+                  <Th>Set</Th>
+                  <Th>Weight</Th>
+                  <Th>Reps</Th> 
+              </Tr>
+              </Thead>
+              <Tbody>
+                  { contents.map((content, index) => ( 
+                      <Tr key={index}>
+                          {/* <Td>{ content.datetime }</Td>
+                          <Td>{ content.routine }</Td> */}
+                          <Td>{ content.exercise }</Td>
+                          <Td>{ content.set }</Td>
+                          <Td>{ content.weight }</Td>
+                          <Td>{ content.rep }</Td>
+                      </Tr>
+                  ))}
+              </Tbody>
+          </Table>
+      </TableContainer>
+        </Section>
         <Section delay={0.8}>
           <Paragraph>{timer}</Paragraph>
           <Paragraph>

@@ -2,11 +2,11 @@
   "resourceName": "workouts",
   "tableName": "workouts",
   "partitionKey": {
-    "fieldName": "date",
+    "fieldName": "datetime",
     "fieldType": "number"
   },
   "sortKey": {
-    "fieldName": "time",
+    "fieldName": "date",
     "fieldType": "number"
   },
   "gsi": [],
