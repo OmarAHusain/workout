@@ -260,7 +260,6 @@ export default function Home() {
   // Pull set list from DynamoDB
   async function fetch() {
     try {
-      console.log('Retreiving data')
       const contentData = await API.graphql(graphqlOperation(listWorkouts))
       setContents(contentData.data.listWorkouts.items)
     }
