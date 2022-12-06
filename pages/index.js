@@ -32,8 +32,11 @@ import {
   Th,
   Td,
   TableCaption,
-  TableContainer
+  TableContainer,
+  filter,
+  list
 } from '@chakra-ui/react'
+import { RepeatIcon } from '@chakra-ui/icons'
 import { motion } from 'framer-motion'
 import Layout from '../components/layouts/article'
 import Section from '../components/section'
@@ -46,6 +49,7 @@ import axios from 'axios' // might not be needed for graphql shit
 import { Amplify , API, graphqlOperation } from 'aws-amplify'
 import { createWorkout } from '../src/graphql/mutations'
 import { listWorkouts } from '../src/graphql/queries'
+import { workoutByDate } from '../src/graphql/queries'
 
 import awsExports from '../src/aws-exports'
 Amplify.configure(awsExports)
@@ -89,7 +93,7 @@ export default function Home() {
   const [routine, setRoutine] = useState('Chest')
 
   // ------ Handle Exercise entry ------
-  const [exercise, setExercise] = useState('')
+  const [exercise, setExercise] = useState('Bench Press')
 
   const chestDefaultList = {
     items: [
@@ -260,15 +264,30 @@ export default function Home() {
   // Pull set list from DynamoDB
   async function fetch() {
     try {
-      const contentData = await API.graphql(graphqlOperation(listWorkouts))
-      setContents(contentData.data.listWorkouts.items)
+      // Specify to only load today's data and to sort data in descending order
+      let specifics = {
+        date: date,
+        sortDirection: 'DESC'
+      }
+
+      // Request data with specifics *required*
+      const contentData = await API.graphql(graphqlOperation(workoutByDate, specifics))
+
+      // If no data, show the initial state instead of a blank table
+      if (contentData.data.workoutByDate.items.length == 0) {
+        setContents([initialState])
+      }
+      else {
+        setContents(contentData.data.workoutByDate.items)      
+      }
     }
     catch (err) {
-      console.log('Error fetching contents: ' + err)
-      console.log('Error message: ' + err.message)
-      console.log('Error stack: ' + err.stack)
-
+      console.log('1. Error fetching contents: ' + err)
+      console.log('2. Error message: ' + err.message)
+      console.log('3. Error stack: ' + err.stack)
+      console.log(err)
     }
+
   }
 
   return (
@@ -352,10 +371,11 @@ export default function Home() {
           </HStack>
         </Section>
         <Section delay={0.7}>
-          <Button width='320px' type='submit' onClick={submitSet}>Set Done</Button>          
+          <Button width='260px' type='submit' onClick={submitSet}>Set Done</Button>
+          <Button marginLeft='20px' width='40px' type='submit' onClick={fetch}><RepeatIcon /></Button>           
         </Section>
         </FormControl>
-        <Section delay={0.8}>
+        <Section delay={0.9}>
         <TableContainer>
           <Table variant='striped' colorScheme='gray' size='sm'>
               <TableCaption>
@@ -363,8 +383,8 @@ export default function Home() {
               </TableCaption>
               <Thead>
               <Tr>
-                  {/* <Th>Time</Th>
-                  <Th>Routine</Th> */}
+                  {/* <Th>Date</Th>
+                  <Th>Time</Th> */}
                   <Th>Exercise</Th>
                   <Th>Set</Th>
                   <Th>Weight</Th>
@@ -374,8 +394,8 @@ export default function Home() {
               <Tbody>
                   { contents.map((content, index) => ( 
                       <Tr key={index}>
-                          {/* <Td>{ content.datetime }</Td>
-                          <Td>{ content.routine }</Td> */}
+                          {/* <Td>{ content.date }</Td>
+                          <Td>{ content.time }</Td>  */}
                           <Td>{ content.exercise }</Td>
                           <Td>{ content.set }</Td>
                           <Td>{ content.weight }</Td>

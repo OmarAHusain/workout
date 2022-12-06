@@ -12,8 +12,8 @@ export const getWorkout = /* GraphQL */ `
       set
       weight
       rep
-      id
       createdAt
+      id
       updatedAt
     }
   }
@@ -34,8 +34,42 @@ export const listWorkouts = /* GraphQL */ `
         set
         weight
         rep
-        id
         createdAt
+        id
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
+export const workoutByDate = /* GraphQL */ `
+  query WorkoutByDate(
+    $date: Int!
+    $createdAt: ModelStringKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelworkoutFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    workoutByDate(
+      date: $date
+      createdAt: $createdAt
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        datetime
+        time
+        date
+        routine
+        exercise
+        set
+        weight
+        rep
+        createdAt
+        id
         updatedAt
       }
       nextToken

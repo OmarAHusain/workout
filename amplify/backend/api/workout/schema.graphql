@@ -4,11 +4,12 @@ input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONL
 
 type workout @model {
   datetime: ID!
-  time: Int!
-  date: Int
+  time: Int! 
+  date: Int @index(name: "workoutByDate", queryField: "workoutByDate", sortKeyFields: ["createdAt"])
   routine: String
   exercise: String
   set: Int
   weight: Int
   rep: Int
+  createdAt: String!
 }

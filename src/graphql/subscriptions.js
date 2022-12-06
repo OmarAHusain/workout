@@ -12,8 +12,8 @@ export const onCreateWorkout = /* GraphQL */ `
       set
       weight
       rep
-      id
       createdAt
+      id
       updatedAt
     }
   }
@@ -29,8 +29,8 @@ export const onUpdateWorkout = /* GraphQL */ `
       set
       weight
       rep
-      id
       createdAt
+      id
       updatedAt
     }
   }
@@ -46,8 +46,8 @@ export const onDeleteWorkout = /* GraphQL */ `
       set
       weight
       rep
-      id
       createdAt
+      id
       updatedAt
     }
   }
