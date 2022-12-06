@@ -96,8 +96,9 @@ export default function Home() {
     items: [
       { name: 'Bench Press'},
       { name: 'Shoulder Press'},
-      { name: 'Assisted Dip'},
+      { name: 'Dip'},
       { name: 'Chest Fly'},
+      { name: 'Seated Shoulder Fly'},
       { name: 'Tricep Extension'},
       { name: 'Crunch'},
       { name: 'Leg Raise'}
@@ -105,10 +106,11 @@ export default function Home() {
 
   const backDefaultList = {
     items: [
-      { name: 'Assisted Pullup'},
+      { name: 'Deadlift'},
+      { name: 'Pullup'},
       { name: 'Bentover Row'},
       { name: 'Standing Row'},
-      { name: 'Shoulder Fly'},
+      { name: 'Rear Shoulder Fly'},
       { name: 'Bicep Curl'},
       { name: 'Bridge'},
       { name: 'Plank'}
@@ -117,7 +119,7 @@ export default function Home() {
   const legDefaultList = {
     items: [
       { name: 'Squat'},
-      { name: 'Deadlift'},
+      { name: 'Leg Press'},
       { name: 'Lunge'},
       { name: 'Hamstring Curl'},
       { name: 'Quad Extension'},

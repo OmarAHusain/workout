@@ -46,6 +46,9 @@ const routine = () => {
                 <Section delay={0.3}>
                     <List>
                         <ListItem>
+                            <ListIcon as={ChevronRightIcon} /> Warm-up
+                        </ListItem>
+                        <ListItem>
                             <ListIcon as={ChevronRightIcon} /> Bench Press
                         </ListItem>
                         <ListItem>
@@ -56,6 +59,9 @@ const routine = () => {
                         </ListItem>
                         <ListItem>
                             <ListIcon as={ChevronRightIcon} /> Chest Flys
+                        </ListItem>
+                        <ListItem>
+                            <ListIcon as={ChevronRightIcon} /> Seated Shoulder Flys
                         </ListItem>
                         <ListItem>
                             <ListIcon as={ChevronRightIcon} /> Tricep Extensions
@@ -83,9 +89,15 @@ const routine = () => {
                     </Heading>
                 </Section>
                 <Section delay={0.5}>
-                <List>
+                    <List>
                         <ListItem>
-                            <ListIcon as={ChevronRightIcon} /> Assisted pullup
+                            <ListIcon as={ChevronRightIcon} /> Warm-up
+                        </ListItem>
+                        <ListItem>
+                            <ListIcon as={ChevronRightIcon} /> Deadlifts
+                        </ListItem>
+                        <ListItem>
+                            <ListIcon as={ChevronRightIcon} /> Pullup
                         </ListItem>
                         <ListItem>
                             <ListIcon as={ChevronRightIcon} /> Bentover Row
@@ -94,7 +106,7 @@ const routine = () => {
                             <ListIcon as={ChevronRightIcon} /> Standing Row
                         </ListItem>
                         <ListItem>
-                            <ListIcon as={ChevronRightIcon} /> Shoulder Flys
+                            <ListIcon as={ChevronRightIcon} /> RearShoulder Flys
                         </ListItem>
                         <ListItem>
                             <ListIcon as={ChevronRightIcon} /> Bicep Curls
@@ -122,12 +134,15 @@ const routine = () => {
                     </Heading>
                 </Section>
                 <Section delay={0.7}>
-                <List>
+                    <List>
+                        <ListItem>
+                            <ListIcon as={ChevronRightIcon} /> Warm-up
+                        </ListItem>
                         <ListItem>
                             <ListIcon as={ChevronRightIcon} /> Squats
                         </ListItem>
                         <ListItem>
-                            <ListIcon as={ChevronRightIcon} /> Deadlifts
+                            <ListIcon as={ChevronRightIcon} /> Leg Press
                         </ListItem>
                         <ListItem>
                             <ListIcon as={ChevronRightIcon} /> Lunges
