@@ -76,3 +76,37 @@ export const workoutByDate = /* GraphQL */ `
     }
   }
 `;
+export const workoutByRoutine = /* GraphQL */ `
+  query WorkoutByRoutine(
+    $routine: String!
+    $createdAt: ModelStringKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelworkoutFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    workoutByRoutine(
+      routine: $routine
+      createdAt: $createdAt
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        datetime
+        time
+        date
+        routine
+        exercise
+        set
+        weight
+        rep
+        createdAt
+        id
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;

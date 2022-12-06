@@ -39,7 +39,7 @@ import Section from '../components/section'
 import Paragraph from '../components/paragraph'
 import { useEffect, useState } from 'react'
 import { Amplify , API, graphqlOperation } from 'aws-amplify'
-import { listWorkouts } from '../src/graphql/queries'
+import { workoutByRoutine } from '../src/graphql/queries'
 import awsExports from '../src/aws-exports'
 Amplify.configure(awsExports)
 
@@ -58,7 +58,9 @@ const data = () => {
       rep: ' - ',
   }
   
-  const [contents, setContents] = useState([initialState])
+  const [chestContents, setChestContents] = useState([initialState])
+  const [backContents, setBackContents] = useState([initialState])
+  const [legContents, setLegContents] = useState([initialState])
 
   // Refresh table
   useEffect(() => {
@@ -68,14 +70,51 @@ const data = () => {
   // Pull set list from DynamoDB
   async function fetch() {
     try {
-      const contentData = await API.graphql(graphqlOperation(listWorkouts))
-      setContents(contentData.data.listWorkouts.items)
+        let chestSpecifics = {
+            routine: 'Chest',
+            sortDirection: 'DESC',
+            limit: '24'
+        }
+        let backSpecifics = {
+            routine: 'Back',
+            sortDirection: 'DESC',
+            limit: '24'
+        }
+        let legSpecifics = {
+            routine: 'Legs',
+            sortDirection: 'DESC',
+            limit: '24'
+        }
+        const chestData = await API.graphql(graphqlOperation(workoutByRoutine, chestSpecifics))
+        const backData = await API.graphql(graphqlOperation(workoutByRoutine, backSpecifics))
+        const legData = await API.graphql(graphqlOperation(workoutByRoutine, legSpecifics))
+        //console.log(backData)
+        if (chestData.data.workoutByRoutine.items.length == 0) {
+            setChestContents([initialState])
+        }
+        else {
+            setChestContents(chestData.data.workoutByRoutine.items)      
+        }
+        if (backData.data.workoutByRoutine.items.length == 0) {
+            setBackContents([initialState])
+        }
+        else {
+            setBackContents(backData.data.workoutByRoutine.items)      
+        }
+        if (legData.data.workoutByRoutine.items.length == 0) {
+            setLegContents([initialState])
+        }
+        else {
+            setLegContents(legData.data.workoutByRoutine.items)      
+        }
+
+        //console.log(contentData.data.workoutByRoutine.nextToken)
     }
     catch (err) {
       console.log('Error fetching contents: ' + err)
       console.log('Error message: ' + err.message)
       console.log('Error stack: ' + err.stack)
-
+      console.log(err)
     }
   }
 
@@ -91,10 +130,10 @@ const data = () => {
                         marginTop="3"
                         marginBottom="4"
                     >
-                        Full Dataset
+                        Last Chest Dataset
                     </Heading>
-                    </Section>
-                    <Section delay={0.8}>
+                </Section>
+                <Section delay={0.2}>
                     <TableContainer>
                         <Table variant='striped' colorScheme='gray' size='sm'>
                             <TableCaption>
@@ -111,7 +150,93 @@ const data = () => {
                             </Tr>
                             </Thead>
                             <Tbody>
-                                { contents.map((content, index) => ( 
+                                { chestContents.map((content, index) => ( 
+                                    <Tr key={index}>
+                                        <Td>{ content.datetime }</Td>
+                                        <Td>{ content.routine }</Td>
+                                        <Td>{ content.exercise }</Td>
+                                        <Td>{ content.set }</Td>
+                                        <Td>{ content.weight }</Td>
+                                        <Td>{ content.rep }</Td>
+                                    </Tr>
+                                ))}
+                            </Tbody>
+                        </Table>
+                    </TableContainer>
+                </Section>
+                <Section delay={0.3}>
+                    <Divider my={6} />
+                    <Heading
+                        as="h3"
+                        variant="section-title"
+                        fontSize="20"
+                        marginTop="3"
+                        marginBottom="4"
+                    >
+                        Last Back Dataset
+                    </Heading>
+                </Section>
+                <Section delay={0.4}>
+                    <TableContainer>
+                        <Table variant='striped' colorScheme='gray' size='sm'>
+                            <TableCaption>
+                                {/* { status } */}
+                            </TableCaption>
+                            <Thead>
+                            <Tr>
+                                <Th>Date & Time</Th>
+                                <Th>Routine</Th>
+                                <Th>Exercise</Th>
+                                <Th>Set</Th>
+                                <Th>Weight</Th>
+                                <Th>Reps</Th> 
+                            </Tr>
+                            </Thead>
+                            <Tbody>
+                                { backContents.map((content, index) => ( 
+                                    <Tr key={index}>
+                                        <Td>{ content.datetime }</Td>
+                                        <Td>{ content.routine }</Td>
+                                        <Td>{ content.exercise }</Td>
+                                        <Td>{ content.set }</Td>
+                                        <Td>{ content.weight }</Td>
+                                        <Td>{ content.rep }</Td>
+                                    </Tr>
+                                ))}
+                            </Tbody>
+                        </Table>
+                    </TableContainer>
+                </Section>
+                <Section delay={0.5}>
+                    <Divider my={6} />
+                    <Heading
+                        as="h3"
+                        variant="section-title"
+                        fontSize="20"
+                        marginTop="3"
+                        marginBottom="4"
+                    >
+                        Last Legs Dataset
+                    </Heading>
+                </Section>
+                <Section delay={0.6}>
+                    <TableContainer>
+                        <Table variant='striped' colorScheme='gray' size='sm'>
+                            <TableCaption>
+                                {/* { status } */}
+                            </TableCaption>
+                            <Thead>
+                            <Tr>
+                                <Th>Date & Time</Th>
+                                <Th>Routine</Th>
+                                <Th>Exercise</Th>
+                                <Th>Set</Th>
+                                <Th>Weight</Th>
+                                <Th>Reps</Th> 
+                            </Tr>
+                            </Thead>
+                            <Tbody>
+                                { legContents.map((content, index) => ( 
                                     <Tr key={index}>
                                         <Td>{ content.datetime }</Td>
                                         <Td>{ content.routine }</Td>

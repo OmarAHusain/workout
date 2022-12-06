@@ -42,13 +42,10 @@ import Layout from '../components/layouts/article'
 import Section from '../components/section'
 import Paragraph from '../components/paragraph'
 import { useEffect, useState } from 'react'
-import { useTime } from 'framer-motion'
 
 // Imports for DynamoDB interactions
-import axios from 'axios' // might not be needed for graphql shit
 import { Amplify , API, graphqlOperation } from 'aws-amplify'
 import { createWorkout } from '../src/graphql/mutations'
-import { listWorkouts } from '../src/graphql/queries'
 import { workoutByDate } from '../src/graphql/queries'
 
 import awsExports from '../src/aws-exports'
@@ -375,7 +372,7 @@ export default function Home() {
           <Button marginLeft='20px' width='40px' type='submit' onClick={fetch}><RepeatIcon /></Button>           
         </Section>
         </FormControl>
-        <Section delay={0.9}>
+        <Section delay={1.9}>
         <TableContainer>
           <Table variant='striped' colorScheme='gray' size='sm'>
               <TableCaption>

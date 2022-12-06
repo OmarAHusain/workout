@@ -6,7 +6,7 @@ type workout @model {
   datetime: ID!
   time: Int! 
   date: Int @index(name: "workoutByDate", queryField: "workoutByDate", sortKeyFields: ["createdAt"])
-  routine: String
+  routine: String @index(name: "workoutByRoutine", queryField: "workoutByRoutine", sortKeyFields: ["createdAt"])
   exercise: String
   set: Int
   weight: Int
