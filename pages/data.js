@@ -39,7 +39,7 @@ import Section from '../components/section'
 import Paragraph from '../components/paragraph'
 import { useEffect, useState } from 'react'
 import { Amplify , API, graphqlOperation } from 'aws-amplify'
-import { workoutByRoutine } from '../src/graphql/queries'
+import { workoutByRoutine, workoutByDate } from '../src/graphql/queries'
 import awsExports from '../src/aws-exports'
 Amplify.configure(awsExports)
 
@@ -62,50 +62,101 @@ const data = () => {
   const [backContents, setBackContents] = useState([initialState])
   const [legContents, setLegContents] = useState([initialState])
 
+  var chestInitData = ''
+  var backInitData = ''
+  var legInitData = ''
+  var chestLastDate = '0'
+  var backLastDate = '0' 
+  var legLastDate = '0'
+
+  async function initFetch() {
+    try {
+        let chestInitSpecifics = {
+            routine: 'Chest',
+            sortDirection: 'DESC',
+            limit: '1'
+        }
+        let backInitSpecifics = {
+            routine: 'Back',
+            sortDirection: 'DESC',
+            limit: '1'
+        }
+        let legInitSpecifics = {
+            routine: 'Legs',
+            sortDirection: 'DESC',
+            limit: '1'
+        }
+        
+        chestInitData = await API.graphql(graphqlOperation(workoutByRoutine, chestInitSpecifics))
+        backInitData = await API.graphql(graphqlOperation(workoutByRoutine, backInitSpecifics))
+        legInitData = await API.graphql(graphqlOperation(workoutByRoutine, legInitSpecifics))
+
+        if(chestInitData.data.workoutByRoutine.items.length != 0){
+            chestLastDate = chestInitData.data.workoutByRoutine.items[0].date
+        }
+
+        if(backInitData.data.workoutByRoutine.items.length != 0){
+            backLastDate = backInitData.data.workoutByRoutine.items[0].date
+        }
+        
+        if(legInitData.data.workoutByRoutine.items.length != 0){
+            legLastDate = legInitData.data.workoutByRoutine.items[0].date
+        }
+    }
+    catch (err) {
+        console.log('Error fetching contents: ' + err)
+        console.log('Error message: ' + err.message)
+        console.log('Error stack: ' + err.stack)
+        console.log(err)
+    }
+    fetch()      
+  }
+
   // Refresh table
   useEffect(() => {
-    fetch()
+    initFetch()
   }, [])
 
   // Pull set list from DynamoDB
   async function fetch() {
     try {
+       
         let chestSpecifics = {
-            routine: 'Chest',
-            sortDirection: 'DESC',
-            limit: '24'
+            date: chestLastDate,
+            sortDirection: 'ASC'
         }
         let backSpecifics = {
-            routine: 'Back',
-            sortDirection: 'DESC',
-            limit: '24'
+            date: backLastDate,
+            sortDirection: 'ASC'
         }
         let legSpecifics = {
-            routine: 'Legs',
-            sortDirection: 'DESC',
-            limit: '24'
+            date: legLastDate,
+            sortDirection: 'ASC'
         }
-        const chestData = await API.graphql(graphqlOperation(workoutByRoutine, chestSpecifics))
-        const backData = await API.graphql(graphqlOperation(workoutByRoutine, backSpecifics))
-        const legData = await API.graphql(graphqlOperation(workoutByRoutine, legSpecifics))
-        //console.log(backData)
-        if (chestData.data.workoutByRoutine.items.length == 0) {
+
+        const chestData = await API.graphql(graphqlOperation(workoutByDate, chestSpecifics))
+        const backData = await API.graphql(graphqlOperation(workoutByDate, backSpecifics))
+        const legData = await API.graphql(graphqlOperation(workoutByDate, legSpecifics))
+
+        // If dataset is empty, leave blank data line instead of aboslutely nothing
+        // Otherwise show dataset
+        if (chestData.data.workoutByDate.items.length == 0) {
             setChestContents([initialState])
         }
         else {
-            setChestContents(chestData.data.workoutByRoutine.items)      
+            setChestContents(chestData.data.workoutByDate.items)      
         }
-        if (backData.data.workoutByRoutine.items.length == 0) {
+        if (backData.data.workoutByDate.items.length == 0) {
             setBackContents([initialState])
         }
         else {
-            setBackContents(backData.data.workoutByRoutine.items)      
+            setBackContents(backData.data.workoutByDate.items)      
         }
-        if (legData.data.workoutByRoutine.items.length == 0) {
+        if (legData.data.workoutByDate.items.length == 0) {
             setLegContents([initialState])
         }
         else {
-            setLegContents(legData.data.workoutByRoutine.items)      
+            setLegContents(legData.data.workoutByDate.items)      
         }
 
         //console.log(contentData.data.workoutByRoutine.nextToken)
@@ -249,6 +300,7 @@ const data = () => {
                             </Tbody>
                         </Table>
                     </TableContainer>
+                    
                 </Section>
             </Container>
         </Layout>
