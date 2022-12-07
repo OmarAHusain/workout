@@ -68,6 +68,9 @@ const data = () => {
   var chestLastDate = '0'
   var backLastDate = '0' 
   var legLastDate = '0'
+  const [chestDateTime, setChestDateTime] = useState('No Data')
+  const [backDateTime, setBackDateTime] = useState('No Data')
+  const [legDateTime, setLegDateTime] = useState('No Data')
 
   async function initFetch() {
     try {
@@ -93,14 +96,17 @@ const data = () => {
 
         if(chestInitData.data.workoutByRoutine.items.length != 0){
             chestLastDate = chestInitData.data.workoutByRoutine.items[0].date
+            setChestDateTime(chestInitData.data.workoutByRoutine.items[0].datetime)
         }
 
         if(backInitData.data.workoutByRoutine.items.length != 0){
             backLastDate = backInitData.data.workoutByRoutine.items[0].date
+            setBackDateTime(backInitData.data.workoutByRoutine.items[0].datetime)
         }
         
         if(legInitData.data.workoutByRoutine.items.length != 0){
             legLastDate = legInitData.data.workoutByRoutine.items[0].date
+            setLegDateTime(legInitData.data.workoutByRoutine.items[0].datetime)
         }
     }
     catch (err) {
@@ -181,7 +187,7 @@ const data = () => {
                         marginTop="3"
                         marginBottom="4"
                     >
-                        Last Chest Dataset
+                        Last Chest Dataset - { chestDateTime }
                     </Heading>
                 </Section>
                 <Section delay={0.2}>
@@ -192,8 +198,8 @@ const data = () => {
                             </TableCaption>
                             <Thead>
                             <Tr>
-                                <Th>Date & Time</Th>
-                                <Th>Routine</Th>
+                                {/* <Th>Date & Time</Th>
+                                <Th>Routine</Th> */}
                                 <Th>Exercise</Th>
                                 <Th>Set</Th>
                                 <Th>Weight</Th>
@@ -203,8 +209,8 @@ const data = () => {
                             <Tbody>
                                 { chestContents.map((content, index) => ( 
                                     <Tr key={index}>
-                                        <Td>{ content.datetime }</Td>
-                                        <Td>{ content.routine }</Td>
+                                        {/* <Td>{ content.datetime }</Td>
+                                        <Td>{ content.routine }</Td> */}
                                         <Td>{ content.exercise }</Td>
                                         <Td>{ content.set }</Td>
                                         <Td>{ content.weight }</Td>
@@ -224,7 +230,7 @@ const data = () => {
                         marginTop="3"
                         marginBottom="4"
                     >
-                        Last Back Dataset
+                        Last Back Dataset - { backDateTime }
                     </Heading>
                 </Section>
                 <Section delay={0.4}>
@@ -235,8 +241,8 @@ const data = () => {
                             </TableCaption>
                             <Thead>
                             <Tr>
-                                <Th>Date & Time</Th>
-                                <Th>Routine</Th>
+                                {/* <Th>Date & Time</Th>
+                                <Th>Routine</Th> */}
                                 <Th>Exercise</Th>
                                 <Th>Set</Th>
                                 <Th>Weight</Th>
@@ -246,8 +252,8 @@ const data = () => {
                             <Tbody>
                                 { backContents.map((content, index) => ( 
                                     <Tr key={index}>
-                                        <Td>{ content.datetime }</Td>
-                                        <Td>{ content.routine }</Td>
+                                        {/* <Td>{ content.datetime }</Td>
+                                        <Td>{ content.routine }</Td> */}
                                         <Td>{ content.exercise }</Td>
                                         <Td>{ content.set }</Td>
                                         <Td>{ content.weight }</Td>
@@ -267,7 +273,7 @@ const data = () => {
                         marginTop="3"
                         marginBottom="4"
                     >
-                        Last Legs Dataset
+                        Last Legs Dataset - { legDateTime }
                     </Heading>
                 </Section>
                 <Section delay={0.6}>
@@ -278,8 +284,8 @@ const data = () => {
                             </TableCaption>
                             <Thead>
                             <Tr>
-                                <Th>Date & Time</Th>
-                                <Th>Routine</Th>
+                                {/* <Th>Date & Time</Th>
+                                <Th>Routine</Th> */}
                                 <Th>Exercise</Th>
                                 <Th>Set</Th>
                                 <Th>Weight</Th>
@@ -289,8 +295,8 @@ const data = () => {
                             <Tbody>
                                 { legContents.map((content, index) => ( 
                                     <Tr key={index}>
-                                        <Td>{ content.datetime }</Td>
-                                        <Td>{ content.routine }</Td>
+                                        {/* <Td>{ content.datetime }</Td>
+                                        <Td>{ content.routine }</Td> */}
                                         <Td>{ content.exercise }</Td>
                                         <Td>{ content.set }</Td>
                                         <Td>{ content.weight }</Td>
