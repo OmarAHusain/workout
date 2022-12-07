@@ -106,7 +106,7 @@ const routine = () => {
                             <ListIcon as={ChevronRightIcon} /> Standing Row
                         </ListItem>
                         <ListItem>
-                            <ListIcon as={ChevronRightIcon} /> RearShoulder Flys
+                            <ListIcon as={ChevronRightIcon} /> Rear Shoulder Flys
                         </ListItem>
                         <ListItem>
                             <ListIcon as={ChevronRightIcon} /> Bicep Curls
