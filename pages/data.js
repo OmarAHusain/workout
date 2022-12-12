@@ -1,42 +1,20 @@
 import {
     Container,
-    chakra, 
+    CircularProgress, 
     Divider, 
     Heading, 
-    Radio, 
-    RadioGroup, 
-    Stack, 
-    Select, 
-    Slider,
-    SliderTrack,
-    SliderFilledTrack,
-    SliderThumb,
-    NumberInput,
-    NumberInputField,
-    NumberInputStepper,
-    NumberIncrementStepper,
-    NumberDecrementStepper,
-    Button,
-    useNumberInput,
-    HStack,
-    Input,
-    useToast,
-    FormControl,
-    FormLabel,
-    shouldForwardProp,
     Table,
     Thead,
     Tbody,
-    Tfoot,
     Tr,
     Th,
     Td,
     TableCaption,
-    TableContainer
+    TableContainer,
+    useColorModeValue
 } from '@chakra-ui/react'
 import Layout from '../components/layouts/article'
 import Section from '../components/section'
-import Paragraph from '../components/paragraph'
 import { useEffect, useState } from 'react'
 import { Amplify , API, graphqlOperation } from 'aws-amplify'
 import { workoutByRoutine, workoutByDate } from '../src/graphql/queries'
@@ -52,11 +30,12 @@ const data = () => {
       date: ' - ', 
       time: ' - ',
       routine: ' - ', 
-      exercise: ' - ', 
-      set: ' - ', 
-      weight: ' - ', 
-      rep: ' - ',
+      exercise: <CircularProgress isIndeterminate size='20px' color={useColorModeValue('gray.800', 'whiteAlpha.900')}/>, 
+      set: <CircularProgress isIndeterminate size='20px' color={useColorModeValue('gray.800', 'whiteAlpha.900')}/>, 
+      weight: <CircularProgress isIndeterminate size='20px' color={useColorModeValue('gray.800', 'whiteAlpha.900')}/>, 
+      rep: <CircularProgress isIndeterminate size='20px' color={useColorModeValue('gray.800', 'whiteAlpha.900')}/>,
   }
+
   
   const [chestContents, setChestContents] = useState([initialState])
   const [backContents, setBackContents] = useState([initialState])
